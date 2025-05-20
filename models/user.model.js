@@ -6,6 +6,10 @@ const UserSchema = new Schema({
   age: Number,
   email: { type: String,required: true,unique: true, },
   password: {type: String,required: true, },
+   profilePic: {
+    type: String,
+    default: "", // you can also set a default image URL here
+  },
   friends: [ {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

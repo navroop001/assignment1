@@ -4,6 +4,7 @@ const MessageSchema = new mongoose.Schema({
   roomId: String,
   username: String,
   message: String,
+  
   timestamp: { type: Date, default: Date.now }
 });
 

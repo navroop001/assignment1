@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
+
+const upload = require("../middleware/upload");
 const User = require("../models/user.model");
 const { registrationValidation } = require("../services/validations");
-router.post("/register", async (req, res, next) => {
+
+const register = async (req, res, next) => {
   try {
-    
     const values = await registrationValidation.validateAsync(req.body);
     const { name, age, email, password } = values;
 
@@ -15,18 +17,32 @@ router.post("/register", async (req, res, next) => {
         message: "User already exists",
       });
     }
-    const newUser = new User({name,age,email,password,});
+
+    const profilePic = req.file ? req.file.path : ""; // get the uploaded file path
+
+    const newUser = new User({
+      name,
+      age,
+      email,
+      password,
+      profilePic,
+    });
 
     await newUser.save();
 
     return res.status(200).json({
       success: true,
       message: "User registered successfully",
-      data: values,
+      data: {
+        name,
+        age,
+        email,
+        profilePic,
+      },
     });
   } catch (error) {
-    next(error); 
+    next(error);
   }
-});
+};
 
-module.exports = router;
+module.exports = register;

@@ -9,7 +9,7 @@ const messageSchema = new mongoose.Schema({
 
 const privateChatSchema = new mongoose.Schema({
   participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  messages: [messageSchema],
+  message: [messageSchema],
 });
 
 module.exports = mongoose.model("PrivateChat", privateChatSchema);

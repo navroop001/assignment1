@@ -1,9 +1,11 @@
 const FriendRequest = require("../models/friendRequests");
 const User = require("../models/user.model");
+const upload=require("../middleware/upload")
 const mongoose = require('mongoose');
 exports.sendFriendRequest = async (req, res) => {
   const { senderId } = req.body;
   const receiverId = req.params.id;
+
 
   if (senderId === receiverId) {
     return res.status(400).json({ message: "Cannot send request to yourself" });
@@ -27,6 +29,7 @@ exports.sendFriendRequest = async (req, res) => {
 exports.acceptFriendRequest = async (req, res) => {
   const receiverId = req.body.recieverId;
   const senderId = req.params.id;
+  
 
   try {
     const request = await FriendRequest.findOne({ senderId, receiverId, isAccepted: { $in: [null, false] }});
@@ -75,7 +78,7 @@ exports.rejectFriendRequest = async (req, res) => {
 
 exports.getAllPendingRequests = async (req, res) => {
   const receiverId = req.params.id;
-console.log(receiverId)
+
   try {
     const requests = await FriendRequest.aggregate([
       { $match: { receiverId: new mongoose.Types.ObjectId(receiverId), isAccepted: null } },
@@ -96,13 +99,18 @@ console.log(receiverId)
           isAccepted: 1,
           senderName: "$sender.name",
           senderEmail: "$sender.email",
+          senderImage: "$sender.profilePic", // ✅ Include sender's image
         },
       },
     ]);
 
-    console.log(requests)
     res.status(200).json(requests);
   } catch (err) {
     res.status(500).json({ message: "Error fetching requests", error: err.message });
   }
 };
+
+
+
+
+ 

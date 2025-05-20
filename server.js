@@ -7,8 +7,9 @@ const routes = require('./index');
 const path = require('path');
 const socketIO = require('socket.io');
 const Message = require('./models/Message');
+const PrivateChat=require("./models/PrivateChat");
 const jwt = require('jsonwebtoken');
-
+const uploadRoute = require("./routes/upload");
 
 dotenv.config();
 
@@ -20,14 +21,14 @@ const io = socketIO(server, {
     methods: ['GET', 'POST']
   }
 });
-
-
+// app.use("/uploads", express.static("uploads"));
 app.use(express.json());
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
 }));
 
+app.use("/api/save-file", uploadRoute);
 
 app.use('/api', routes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
